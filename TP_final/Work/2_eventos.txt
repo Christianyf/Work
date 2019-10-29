@@ -1,0 +1,47 @@
+// Crear dos eventos ligados a una sola cola
+// Puedo llamar periodicamente a uno de los eventos creados
+// Muestro los id de los contextos (dos)
+// --Se puede hacer lo mismo solo usando queue.call o queue.event
+#include "mbed.h"
+#include "mbed_events.h"
+#include <stdio.h>
+ 
+DigitalOut led1(LED1);
+
+void rise_handler(void);
+void fall_handler(void);
+
+EventQueue *queue = mbed_event_queue();
+Event<void(void)> event1(queue,rise_handler);
+Event<void(void)> event2(queue,fall_handler);
+ 
+void rise_handler(void) {
+    // Toggle LED
+    led1 = !led1;
+    //queue->call(printf, "called from rise \r\n");
+    printf("rise context %p\r\n", Thread::gettid());
+}
+ 
+void fall_handler(void) {
+    printf("fall context %p\r\n", Thread::gettid());
+    // Toggle LED
+    led1 = !led1;
+}
+
+
+ 
+int main() {
+
+    //event1.period(2000);
+    
+    event1.post();
+    event2.post();
+    //queue->call(printf, "called immediately1 \r\n");
+    //queue->event(rise_handler);    
+    
+    printf("Fin del main %p\r\n", Thread::gettid());
+    //printf("fin del main\r\n");
+    
+    //while(1){
+    //}
+}

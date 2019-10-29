@@ -1,0 +1,43 @@
+/*========================================================================
+ * Copyright 2019 Christian Yanez Flores
+ * All rights reserved.
+ * License: BSD-3-Clause <https://opensource.org/licenses/BSD-3-Clause>)
+ *
+ * Version: 1.0.0
+ * Creation Date: 
+ */
+ /*===================Description============================================
+ * Interrupción generada cada 5 minutos como base de tiempo
+ * La interrupción apaga o enciende un led segun su estado anterior
+ * 
+ */
+ 
+/*=====[Inclusions of function dependencies]=================================*/
+#include "mbed.h"
+/*=====[Definition macros of private constants]==============================*/
+
+#define BASE_TIME 300.0 //Base time for 5min(300sec)
+
+// ----- Configurations --------------------------
+Serial pc(USBTX, USBRX);
+Ticker flipper;
+DigitalOut led1(LED1);
+
+/*=====[Prototypes (declarations) of private functions]======================*/
+void flip() {
+    led1 = !led1;
+    pc.printf("Esta es la interrupcion\r\n");
+}
+
+/*=====[Main function, program entry point after power on or reset]==========*/
+int main() {
+    
+    pc.printf("Entra al main\r\n");
+    led1 = 1;
+    flipper.attach(&flip, BASE_TIME); // the address of the function to be attached (flip) and the interval (5 min)
+    
+    // spin in a main loop. flipper will interrupt it to call flip
+    while(1) {
+
+    }
+}
